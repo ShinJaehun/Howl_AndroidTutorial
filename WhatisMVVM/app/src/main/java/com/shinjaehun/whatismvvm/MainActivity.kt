@@ -7,12 +7,12 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import com.shinjaehun.whatismvvm.databinding.ActivityMainBinding
 
-// controller
-class MainActivity : AppCompatActivity() {
+// interface
+class MainActivity : AppCompatActivity(), ViewInterface {
 
     lateinit var binding: ActivityMainBinding
 
-    var model = Model()
+    var presenter = Presenter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,12 +21,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun clickNumber(i: Int) {
+        presenter.clickNumber(i) // presenter로 값을 넘김
+    }
+
+    override fun toastMessage(i: Int) { // presenter에서 값을 받아오면 화면에 표시
         Toast.makeText(this, "$i 번을 클릭함", Toast.LENGTH_SHORT).show()
+    }
 
-        model.inputPassword(i)
-
-        if (model.password.size == 4 && model.checkPassword()) {
-            binding.messageSuccess.visibility = View.VISIBLE
-        }
+    override fun checkPasswordMessage() { // presenter에서 값을 받아오면 화면에 표시
+        binding.messageSuccess.visibility = View.VISIBLE
     }
 }
