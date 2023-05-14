@@ -5,30 +5,33 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.Observable
+import androidx.lifecycle.Observer
 import com.shinjaehun.whatismvvm.databinding.ActivityMainBinding
 
 // interface
-class MainActivity : AppCompatActivity(), ViewInterface {
+class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
 
-    var presenter = Presenter(this)
-
+//    var presenter = Presenter(this)
+    var viewModel = ViewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.mainActivity = this
-    }
+        binding.viewModel = viewModel
 
-    fun clickNumber(i: Int) {
-        presenter.clickNumber(i) // presenter로 값을 넘김
-    }
-
-    override fun toastMessage(i: Int) { // presenter에서 값을 받아오면 화면에 표시
-        Toast.makeText(this, "$i 번을 클릭함", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun checkPasswordMessage() { // presenter에서 값을 받아오면 화면에 표시
-        binding.messageSuccess.visibility = View.VISIBLE
+        viewModel.toastMessage.observe(this, Observer {
+            Toast.makeText(this, "$it 번을 클릭함", Toast.LENGTH_SHORT).show()
+        })
+        viewModel.checkPasswordMessage.addOnPropertyChangedCallback(object: Observable.OnPropertyChangedCallback(){
+            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                if (viewModel.checkPasswordMessage.get() == true) {
+                    binding.messageSuccess.visibility = View.VISIBLE
+                } else {
+                    binding.messageSuccess.visibility = View.GONE
+                }
+            }
+        })
     }
 }
