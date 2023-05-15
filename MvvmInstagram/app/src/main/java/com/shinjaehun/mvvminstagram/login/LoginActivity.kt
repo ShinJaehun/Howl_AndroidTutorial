@@ -3,13 +3,19 @@ package com.shinjaehun.mvvminstagram.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
 import com.shinjaehun.mvvminstagram.R
 import com.shinjaehun.mvvminstagram.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
+
     lateinit var binding: ActivityLoginBinding
 //    lateinit var loginViewModel: LoginViewModel
     val loginViewModel: LoginViewModel by viewModels() // 이거 implementation 하나 추가하고 이렇게 바꿨음
@@ -24,6 +30,7 @@ class LoginActivity : AppCompatActivity() {
         binding.viewModel = loginViewModel
         binding.activity = this
         binding.lifecycleOwner = this
+
         setObserve()
     }
 
@@ -42,12 +49,19 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun loginEmail(){
-        println("Email")
-        loginViewModel.showInputNumberActivity.value = true
-    }
+
     fun findId(){
         println("findId")
         loginViewModel.showFindIdActivity.value = true
+    }
+
+    // 구글 로그인 성공한 결과 값을 받음
+    var googleLoginResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
+        val data = result.data
+        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+        val account = task.getResult(ApiException::class.java)
+        account.idToken // 로그인한 사용자 정보를 암호화한 값
+
+        loginViewModel.firebaseAuthWithGoogle(account.idToken)
     }
 }
