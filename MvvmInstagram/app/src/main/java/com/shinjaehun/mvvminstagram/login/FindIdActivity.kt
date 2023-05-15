@@ -1,11 +1,12 @@
-package com.shinjaehun.mvvminstagram
+package com.shinjaehun.mvvminstagram.login
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.shinjaehun.mvvminstagram.R
 
-class LoginActivity : AppCompatActivity() {
+class FindIdActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setContentView(R.layout.activity_find_id)
     }
 }
