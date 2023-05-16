@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.shinjaehun.mvvminstagram.MainActivity
 import com.shinjaehun.mvvminstagram.R
 import com.shinjaehun.mvvminstagram.databinding.ActivityLoginBinding
 
@@ -47,8 +48,12 @@ class LoginActivity : AppCompatActivity() {
                 startActivity(Intent(this, FindIdActivity::class.java))
             }
         }
+        loginViewModel.showMainActivity.observe(this){
+            if (it) {
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+        }
     }
-
 
     fun findId(){
         println("findId")
